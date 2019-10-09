@@ -1,4 +1,4 @@
-const Api = {}
+const Api = {};
 
 if (process.env.NODE_ENV === 'development') {
     window.WAA_Api = Api
@@ -13,13 +13,13 @@ export const initApi = () => {
         *
         * */
 
-        const scripts = document.getElementsByTagName('script')
-        const regexApp = /\/app3\..+.js/
-        let appScriptUrl
+        const scripts = document.getElementsByTagName('script');
+        const regexApp = /\/app2\..+.js/;
+        let appScriptUrl;
 
         // Derive script urls
         for (let i = 0; i < scripts.length; i++) {
-            const src = scripts[i].src
+            const src = scripts[i].src;
             if (regexApp.exec(src) != null) {
                 appScriptUrl = src
             }
@@ -28,35 +28,43 @@ export const initApi = () => {
 
         // Download scripts, regex them and assign store
         fetch(appScriptUrl).then(e => {
-            const reader = e.body.getReader()
-            let js_src = ""
+            const reader = e.body.getReader();
+            let js_src = "";
 
             return reader.read().then(function readMore({done, value}) {
-                const td = new TextDecoder("utf-8")
-                const str_value = td.decode(value)
+                const td = new TextDecoder("utf-8");
+                const str_value = td.decode(value);
                 if (done) {
-                    js_src += str_value
-                    const regExDynNameStore1 = /Wap:[a-z]\("(\w+)"\)/
-                    const res1 = regExDynNameStore1.exec(js_src)
-                    const funcName1 = res1[1]
+                    js_src += str_value;
 
-                    const WLAPWAPStore = window.webpackJsonp([], {[funcName1]: (x, y, z) => {
-                    }}, [funcName1])
-                    Api.WLAPWAPStore = WLAPWAPStore
+                    const regExDynNameStore1 = /Wap:\s*[a-z]\("(\w+)"\)/
+                    const res1 = regExDynNameStore1.exec(js_src);
+                    // const funcName1 = res1[1];
+                    const funcName1 = "bihdhbjih";
+                    //bihdhbjih
 
-                    const regExDynNameStore2 = /(\w+):function\(e,t,i\)\{\"use strict\";e\.exports=\{AllStarredMsgs:/
-                    const res2 = regExDynNameStore2.exec(js_src)
-                    const funcName2 = res2[1]
+                    Api.WLAPWAPStore = window.webpackJsonp([], {
+                        [funcName1]: (x, y, z) => {
+                        }
+                    }, [funcName1]);
 
-                    const WLAPStore = window.webpackJsonp([], {[funcName2]: (x, y, z) => {
-                    }}, [funcName2])
-                    Api.WLAPStore = WLAPStore
-                    resolve()
+                    const regExDynNameStore2 = /(\w+):\s*function\s*\(e,\s*t,\s*n\)\s*\{\s*\"use strict\";\s*e\.exports\s*=\s*\{\s*AllStarredMsgs\s*:/;
+                    const res2 = regExDynNameStore2.exec(js_src);
+                    console.log("Res2", res2);
+                    const funcName2 = res2[1];
+
+                    const WLAPStore = window.webpackJsonp([], {
+                        [funcName2]: (x, y, z) => {
+                        }
+                    }, [funcName2]);
+                    resolve();
+
+                    Api.WLAPStore = WLAPStore;
 
                     return
                 }
 
-                js_src += str_value
+                js_src += str_value;
                 return reader.read().then(readMore)
 
             })

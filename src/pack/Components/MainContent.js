@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import styled from 'styled-components'
-import NavBar  from './NavBar'
-import {Container } from 'reactstrap'
+import NavBar from './NavBar'
+import {Container} from 'reactstrap'
 import InputPanel from "./InputPanel"
 import ResultsPanel from "./ResultsPanel"
 import L from '../utils/Log'
-import { getApi } from '../utils/WWapApi'
+import {getApi} from '../utils/WWapApi'
 import demoAccounts from '../utils/demoAccounts'
 
 
@@ -26,9 +26,10 @@ const Content = styled.div`
   margin: 0 0 150px 0;
   
 `
+
 class MainContent extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             hydraterFastId: -1,
@@ -44,8 +45,7 @@ class MainContent extends Component {
         this.setupPhoneNumbers = this.setupPhoneNumbers.bind(this)
         this.subscribeToPresence = this.subscribeToPresence.bind(this)
         this.startWappHydrater = this.startWappHydrater.bind(this)
-        this.stopWappHydrater = this.stopWappHydrater.bind(this)  
-
+        this.stopWappHydrater = this.stopWappHydrater.bind(this)
 
 
     }
@@ -181,28 +181,29 @@ class MainContent extends Component {
     subscribeToPresence() {
         L(`Subscribing to WAPP presence`)
         this.state.accounts.forEach((account) => {
-            getApi().WLAPWAPStore.default.subscribePresence( account.phoneNr + '@c.us')
+            getApi().WLAPWAPStore.default.subscribePresence(account.phoneNr + '@c.us')
         })
     }
 
     setupPhoneNumbers(arrNumbers) {
         this.stopWappHydrater()
         L(`Searching for ${arrNumbers.length} numbers`)
-        this.setState({accounts: arrNumbers.map((nr) => ({
-                phoneNr: nr,
-                lastSeen: new Date(1970)
-            }))}, () => {
+        this.setState({
+                accounts: arrNumbers.map((nr) => ({
+                    phoneNr: nr,
+                    lastSeen: new Date(1970)
+                }))
+            }, () => {
                 this.subscribeToPresence()
                 this.startWappHydrater()
-        }
-
+            }
         )
 
     }
 
     render() {
 
-        return(
+        return (
             <StyledContainer className={this.props.isOpen ? 'open' : ''}>
                 <Content>
                     <NavBar/>
@@ -210,7 +211,7 @@ class MainContent extends Component {
                     <Container>
                         <InputPanel demoMode={this.props.demoMode} onSearch={this.setupPhoneNumbers}/>
                         <div className="mb-3"/>
-                        {this.state.accounts.length > 0 ? <ResultsPanel accounts={this.state.accounts}/> : <span/> }
+                        {this.state.accounts.length > 0 ? <ResultsPanel accounts={this.state.accounts}/> : <span/>}
                     </Container>
                 </Content>
             </StyledContainer>
