@@ -50,8 +50,9 @@ export const initApi = () => {
 
                     const regExDynNameStore2 = /(\w+):\s*function\s*\(e,\s*t,\s*n\)\s*\{\s*\"use strict\";\s*e\.exports\s*=\s*\{\s*AllStarredMsgs\s*:/;
                     const res2 = regExDynNameStore2.exec(js_src);
-                    console.log("Res2", res2);
-                    const funcName2 = res2[1];
+                    // const funcName2 = res2[1];
+                    const funcName2 = "djfhiceeje";
+                    // djfhiceeje
 
                     const WLAPStore = window.webpackJsonp([], {
                         [funcName2]: (x, y, z) => {
