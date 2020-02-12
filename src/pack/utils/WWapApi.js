@@ -43,30 +43,27 @@ export const initApi = () => {
                     const funcName1 = "bihdhbjih";
                     //bihdhbjih
 
-                    Api.WLAPWAPStore = window.webpackJsonp([], {
-                        [funcName1]: (x, y, z) => {
-                        }
-                    }, [funcName1]);
+                    const WLAPWAPStore = window.webpackJsonp([], null , [funcName1]).default;
+
+                    Api.WLAPWAPStore = WLAPWAPStore;
 
                     const regExDynNameStore2 = /(\w+):\s*function\s*\(e,\s*t,\s*n\)\s*\{\s*\"use strict\";\s*e\.exports\s*=\s*\{\s*AllStarredMsgs\s*:/;
                     const res2 = regExDynNameStore2.exec(js_src);
                     // const funcName2 = res2[1];
-                    const funcName2 = "djfhiceeje";
-                    // djfhiceeje
+                    const funcName2 = "bhggeigghg";
+                    // djfhiceeje form visika
+                    // bhggeigghg from mod
 
-                    const WLAPStore = window.webpackJsonp([], {
-                        [funcName2]: (x, y, z) => {
-                        }
-                    }, [funcName2]);
+                    const WLAPStore = window.webpackJsonp([], null, [funcName2]).default;
                     resolve();
 
                     Api.WLAPStore = WLAPStore;
 
-                    return
+                    return;
                 }
 
                 js_src += str_value;
-                return reader.read().then(readMore)
+                return reader.read().then(readMore);
 
             })
 
