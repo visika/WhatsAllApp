@@ -61,9 +61,10 @@ class InputPanel extends Component {
     }
 
     onListValChange(e) {
+        let val = e.target.value.toString().replace(/ /g, "");
         this.setState({
-            listVal: e.target.value,
-            isListValid: this.isListValid(e.target.value)
+            listVal: val,
+            isListValid: this.isListValid(val)
         })
 
     }

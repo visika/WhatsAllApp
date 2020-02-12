@@ -74,7 +74,6 @@ class ResultsPanel extends Component {
         L('Creating zip')
         const zip = new JSZip()
         let accounts = this.props.accounts.filter((a) => a.photoUrl !== null && a.photoUrl !== undefined)
-        let csv = 'Phone_nr;name;status;last_seen\n'
         let nrOfImgFetchFinished = 0
         let nrOfAccounts = accounts.length
         for (let i=0; i<nrOfAccounts ;i++) {
@@ -83,7 +82,7 @@ class ResultsPanel extends Component {
                 ZipFileFromUrl(zip, account.phoneNr + '.jpg', account.photoUrl, null, () => {
                     nrOfImgFetchFinished++;
                     if (nrOfImgFetchFinished === nrOfAccounts) {
-                        zip.file('db.csv', csv);
+                        zip.file('db.csv', sessionStorage.getItem('csv'));
                         L('Saving to zip')
                         zip.generateAsync({type:"blob"})
                             .then(function(content) {
@@ -92,14 +91,14 @@ class ResultsPanel extends Component {
                     }
                 }, {xhrtype:"blob"})
 
-                const phoneNr = account.phoneNr
+                /* const phoneNr = account.phoneNr
                 const displayName = account.displayName ? account.displayName : ''
                 const statusTxt = account.statusTxt ? account.statusTxt : ''
                 const lastSeenM = moment(account.lastSeen)
                 const lastSeen = moment() - lastSeenM < 604800000 ? <span>{lastSeenM.format('DD-MM-YYYY HH:mm')}{' '}<span
                     className="small">{'(' + lastSeenM.fromNow() + ')'}</span></span> : 'Never'
 
-                csv += `${phoneNr};${displayName};${statusTxt};${lastSeen}\n`
+                csv += `${phoneNr};${displayName};${statusTxt};${lastSeen}\n` */
 
             }
 

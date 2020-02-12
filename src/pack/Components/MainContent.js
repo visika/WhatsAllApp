@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import styled from 'styled-components'
-import NavBar  from './NavBar'
-import {Container } from 'reactstrap'
+import NavBar from './NavBar'
+import {Container} from 'reactstrap'
 import InputPanel from "./InputPanel"
 import ResultsPanel from "./ResultsPanel"
 import L from '../utils/Log'
-import { getApi } from '../utils/WWapApi'
+import {getApi} from '../utils/WWapApi'
 import demoAccounts from '../utils/demoAccounts'
 
 
@@ -26,9 +26,10 @@ const Content = styled.div`
   margin: 0 0 150px 0;
   
 `
+
 class MainContent extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             hydraterFastId: -1,
@@ -44,8 +45,7 @@ class MainContent extends Component {
         this.setupPhoneNumbers = this.setupPhoneNumbers.bind(this)
         this.subscribeToPresence = this.subscribeToPresence.bind(this)
         this.startWappHydrater = this.startWappHydrater.bind(this)
-        this.stopWappHydrater = this.stopWappHydrater.bind(this)  
-
+        this.stopWappHydrater = this.stopWappHydrater.bind(this)
 
 
     }
@@ -90,6 +90,12 @@ class MainContent extends Component {
         L(`Killing previous WAPP hydraters if any`)
         this.stopWappHydrater()
 
+        // I need to create a Web Storage to transfer data to the zipper to download
+        // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
+        // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+
+        sessionStorage.setItem('csv', 'data:text/csv;charset=utf-8\nphone_num,name,datetime_online\n')
+
         L(`Starting WAPP hydraters`)
         // Attributes to check every 10s
         const hydraterFast = () => {
@@ -103,8 +109,10 @@ class MainContent extends Component {
                 const model = getApi().WLAPStore.Presence.models
                     .find((x) => x.__x_id.user === account.phoneNr.toString())
                 if (model && model.isOnline) {
-                    L(account.phoneNr + ' is online')
-                    account.lastSeen = new Date()
+                    let accountTime = Date().toLocaleString().slice(3, 24);
+                    L(account.phoneNr + ' is online' + accountTime);
+                    sessionStorage.setItem('csv', sessionStorage.getItem('csv') + account.phoneNr + "," + account.displayName + ',' + accountTime + "\n");
+                    account.lastSeen = new Date();
                 }
                 hydratedAccounts.push(account)
             })
@@ -136,7 +144,7 @@ class MainContent extends Component {
 
                 // 2. Status text
                 const statusFind = () => {
-                    getApi().WLAPWAPStore.default.statusFind(account.phoneNr + '@c.us').then((response) => {
+                    getApi().WLAPWAPStore.statusFind(account.phoneNr + '@c.us').then((response) => {
                         const hydratedAccounts = this.state.accounts
                         const index = hydratedAccounts.findIndex((stateAcc) => stateAcc.phoneNr === account.phoneNr)
                         hydratedAccounts[index].statusTxt = response.status
@@ -181,28 +189,29 @@ class MainContent extends Component {
     subscribeToPresence() {
         L(`Subscribing to WAPP presence`)
         this.state.accounts.forEach((account) => {
-            getApi().WLAPWAPStore.default.subscribePresence( account.phoneNr + '@c.us')
+            getApi().WLAPWAPStore.subscribePresence(account.phoneNr + '@c.us')
         })
     }
 
     setupPhoneNumbers(arrNumbers) {
         this.stopWappHydrater()
         L(`Searching for ${arrNumbers.length} numbers`)
-        this.setState({accounts: arrNumbers.map((nr) => ({
-                phoneNr: nr,
-                lastSeen: new Date(1970)
-            }))}, () => {
+        this.setState({
+                accounts: arrNumbers.map((nr) => ({
+                    phoneNr: nr,
+                    lastSeen: new Date(1970)
+                }))
+            }, () => {
                 this.subscribeToPresence()
                 this.startWappHydrater()
-        }
-
+            }
         )
 
     }
 
     render() {
 
-        return(
+        return (
             <StyledContainer className={this.props.isOpen ? 'open' : ''}>
                 <Content>
                     <NavBar/>
@@ -210,7 +219,7 @@ class MainContent extends Component {
                     <Container>
                         <InputPanel demoMode={this.props.demoMode} onSearch={this.setupPhoneNumbers}/>
                         <div className="mb-3"/>
-                        {this.state.accounts.length > 0 ? <ResultsPanel accounts={this.state.accounts}/> : <span/> }
+                        {this.state.accounts.length > 0 ? <ResultsPanel accounts={this.state.accounts}/> : <span/>}
                     </Container>
                 </Content>
             </StyledContainer>
