@@ -90,6 +90,12 @@ class MainContent extends Component {
         L(`Killing previous WAPP hydraters if any`)
         this.stopWappHydrater()
 
+        // I need to create a Web Storage to transfer data to the zipper to download
+        // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API
+        // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
+
+        sessionStorage.setItem('csv', 'data:text/csv;charset=utf-8\nphone_num,name,datetime_online\n')
+
         L(`Starting WAPP hydraters`)
         // Attributes to check every 10s
         const hydraterFast = () => {
@@ -103,8 +109,10 @@ class MainContent extends Component {
                 const model = getApi().WLAPStore.Presence.models
                     .find((x) => x.__x_id.user === account.phoneNr.toString())
                 if (model && model.isOnline) {
-                    L(account.phoneNr + ' is online')
-                    account.lastSeen = new Date()
+                    let accountTime = Date().toLocaleString().slice(3, 24);
+                    L(account.phoneNr + ' is online' + accountTime);
+                    sessionStorage.setItem('csv', sessionStorage.getItem('csv') + account.phoneNr + "," + account.displayName + ',' + accountTime + "\n");
+                    account.lastSeen = new Date();
                 }
                 hydratedAccounts.push(account)
             })
